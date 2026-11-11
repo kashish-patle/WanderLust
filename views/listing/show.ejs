@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h3>Listing Details</h3>
+
+    <ul>
+        <li><b>ID:</b> <%= listing._id %></li>
+        <li><b>Title:</b> <%= listing.title %></li>
+        <li><b>Description:</b> <%= listing.description %></li>
+        <li><b>Price:</b> ₹ <%= listing.price %></li>
+        <li><b>Location:</b> <%= listing.location %></li>
+        <li><b>Country:</b> <%= listing.country %></li>
+
+    </ul>
+    <a href="/listings/<%= listing._id %>/edit">Edit</a>
+
+</body>
+</html>
