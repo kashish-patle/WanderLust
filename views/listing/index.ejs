@@ -1,23 +1,44 @@
 <% layout("/layouts/boilerplate") %>
 <body>
     <h1>All Listings</h1>
-    <form method="GET" action="/listings/new">
+
+    <!-- <form method="GET" action="/listings/new">
         <button>Create New Listing</button>
-    </form>
-    <% for(let listing of allListing) { %>
-        <div>
-            <h3><%= listing.title %></h3>
+    </form> -->
+    
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        <% for(let listing of allListing) { %>
+            <div class="col">
+                <a href="/listings/<%= listing._id %>" class="listing-link">
+                    <div class="card listing-card">
+                        <img
+                            src="<%= listing.image.url %>"
+                            class="card-img-top"
+                            alt="listing image"
+                        >
 
-            <a href="/listings/<%= listing._id %>">
-                View Details
-            </a>
-            <br>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= listing.title %>
+                            </h5>
 
-            <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-                <button type="submit">Delete Listing</button>
-            </form>
+                            <p class="card-text">
+                                <%= listing.location %>, <%= listing.country %>
+                            </p>
 
-        </div>
-    <% } %>
+                            <p class="listing-price">
+                                ₹ <%= listing.price.toLocaleString("en-IN") %>
+                                <span> / night</span>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <% } %>
+    </div>
+    
+    <hr>
+
+    
 
 </body>

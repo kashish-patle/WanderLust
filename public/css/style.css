@@ -1,0 +1,277 @@
+body {
+    background-color: pink;
+}
+
+/* Navbar */
+.navbar {
+    background-color: white !important;
+}
+
+/* Compass Icon */
+.navbar-brand i {
+    color: #fe424d;
+    font-size: 1.5rem;
+    margin-right: 5px;
+}
+
+/* Brand Name */
+.navbar-brand {
+    color: #fe424d !important;
+    font-weight: bold;
+}
+
+/* Navbar Links */
+.nav-link {
+    color: #222222 !important;
+}
+
+.nav-link:hover {
+    color: #fe424d !important;
+}
+
+/* Search Button */
+.btn-outline-success {
+    border-color: #fe424d;
+    color: #fe424d;
+}
+
+.btn-outline-success:hover {
+    background-color: #fe424d;
+    color: white;
+    border-color: #fe424d;
+}
+
+
+
+.footer {
+    background-color: #ebebeb;
+    padding: 40px 60px 20px;
+    margin-top: 50px;
+}
+
+.footer h5 {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.footer p {
+    color: #555;
+    line-height: 1.6;
+}
+
+.footer a {
+    color: #222;
+    text-decoration: none;
+    line-height: 2;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    color: #fe424d;
+}
+
+.footer-social {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.footer-social a {
+    font-size: 1.4rem;
+    margin: 0 12px;
+}
+
+.footer-copyright {
+    text-align: center;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+
+/* Listing Cards */
+.listing-card {
+    border: none !important;
+    border-radius: 15px !important;
+    overflow: hidden;
+    margin-bottom: 10px;
+    transition: 0.2s ease;
+}
+
+.listing-card:hover {
+    transform: translateY(-4px);
+}
+
+.listing-card img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.listing-card .card-body {
+    padding: 12px 4px;
+}
+
+.listing-card .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.listing-card .card-text {
+    color: #717171;
+    margin-bottom: 6px;
+}
+
+.listing-price {
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.listing-price span {
+    font-weight: 400;
+}
+
+.listing-link {
+    text-decoration: none;
+    color: #222;
+}
+
+.listing-link:hover {
+    color: #222;
+}
+
+
+/* Add Listing Form */
+
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 40px;
+}
+
+.form-heading {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.form-subheading {
+    color: #777;
+    margin-bottom: 25px;
+}
+
+.form-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 11px 13px;
+}
+
+.form-control:focus {
+    border-color: #fe424d;
+    box-shadow: 0 0 0 0.15rem rgba(254, 66, 77, 0.15);
+}
+
+.add-listing-btn {
+    background-color: #fe424d !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.add-listing-btn:hover {
+    background-color: #e63946 !important;
+}
+
+
+/* Show Listing Page */
+
+.show-container {
+    max-width: 750px;
+    margin: 35px auto;
+}
+
+.show-heading {
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.show-card {
+    border: none !important;
+    border-radius: 18px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+}
+
+.show-card-img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+}
+
+.show-card-body {
+    padding: 25px;
+}
+
+.show-card-body .card-title {
+    font-size: 1.7rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.show-description {
+    color: #666;
+    line-height: 1.7;
+}
+
+.show-price {
+    font-weight: 700;
+    margin: 18px 0;
+}
+
+.show-price span {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #777;
+}
+
+.show-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+.show-actions form {
+    margin: 0;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #fe424d;
+    text-decoration: none;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .show-card-img {
+        height: 250px;
+    }
+
+    .show-card-body {
+        padding: 18px;
+    }
+}

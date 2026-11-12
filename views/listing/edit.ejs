@@ -1,27 +1,90 @@
+
 <% layout("/layouts/boilerplate") %>
-<body>
-    <h3>Edit Listing</h3>
 
-<form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
+<div class="row mt-4">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="form-container">
 
-    <input type="text" name="listing[title]" value="<%= listing.title %>" placeholder="Title">
-    <br><br>
+            <h2 class="form-heading">Edit Your Listing</h2>
+            <p class="form-subheading">Update your property details below.</p>
 
-    <input type="text" name="listing[description]" value="<%= listing.description %>" placeholder="Description">
-    <br><br>
+            <form method="POST" action="/listings/<%= listing._id %>?_method=PUT">
 
-    <input type="text" name="listing[image][url]" value="<%= listing.image.url %>" placeholder="Image URL">
-    <br><br>
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input
+                        type="text"
+                        name="listing[title]"
+                        class="form-control"
+                        value="<%= listing.title %>"
+                        required
+                    >
+                </div>
 
-    <input type="number" name="listing[price]" value="<%= listing.price %>" placeholder="Price">
-    <br><br>
+                <div class="mb-3">
+                    <label class="form-label">Description</label>
+                    <textarea
+                        name="listing[description]"
+                        class="form-control"
+                        rows="4"
+                    ><%= listing.description %></textarea>
+                </div>
 
-    <input type="text" name="listing[location]" value="<%= listing.location %>" placeholder="Location">
-    <br><br>
+                <div class="mb-3">
+                    <label class="form-label">Image URL</label>
+                    <input
+                        type="text"
+                        name="listing[image][url]"
+                        class="form-control"
+                        value="<%= listing.image?.url || '' %>"
+                    >
+                </div>
 
-    <input type="text" name="listing[country]" value="<%= listing.country %>" placeholder="Country">
-    <br><br>
+                <div class="mb-3">
+                    <label class="form-label">Price per night (₹)</label>
+                    <input
+                        type="number"
+                        name="listing[price]"
+                        class="form-control"
+                        value="<%= listing.price %>"
+                        min="0"
+                        required
+                    >
+                </div>
 
-    <button type="submit">Update</button>
-</form> 
-</body>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Location</label>
+                        <input
+                            type="text"
+                            name="listing[location]"
+                            class="form-control"
+                            value="<%= listing.location %>"
+                        >
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Country</label>
+                        <input
+                            type="text"
+                            name="listing[country]"
+                            class="form-control"
+                            value="<%= listing.country %>"
+                        >
+                    </div>
+                </div>
+
+                <button type="submit" class="btn add-listing-btn w-100">
+                    Save Changes
+                </button>
+
+                <a href="/listings/<%= listing._id %>"
+                   class="btn btn-outline-secondary w-100 mt-2">
+                    Cancel
+                </a>
+
+            </form>
+        </div>
+    </div>
+</div>
+

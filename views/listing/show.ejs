@@ -1,16 +1,57 @@
+
 <% layout("/layouts/boilerplate") %>
-<body>
-   <h3>Listing Details</h3>
 
-    <ul>
-        <li><b>ID:</b> <%= listing._id %></li>
-        <li><b>Title:</b> <%= listing.title %></li>
-        <li><b>Description:</b> <%= listing.description %></li>
-        <li><b>Price:</b> ₹ <%= listing.price %></li>
-        <li><b>Location:</b> <%= listing.location %></li>
-        <li><b>Country:</b> <%= listing.country %></li>
+<div class="show-container">
 
-    </ul>
-    <a href="/listings/<%= listing._id %>/edit">Edit</a>
+    <h2 class="show-heading">Listing Details</h2>
 
-</body>
+    <div class="card show-card">
+
+        <img
+            src="<%= listing.image.url %>"
+            class="show-card-img"
+            alt="Listing Image"
+        >
+
+        <div class="card-body show-card-body">
+
+            <h3 class="card-title"><%= listing.title %></h3>
+
+            <p class="show-description">
+                <%= listing.description %>
+            </p>
+
+            <hr>
+
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                <%= listing.location %>, <%= listing.country %>
+            </p>
+
+            <h5 class="show-price">
+                ₹ <%= listing.price.toLocaleString("en-IN") %>
+                <span>/ night</span>
+            </h5>
+
+            <div class="show-actions">
+                <a href="/listings/<%= listing._id %>/edit"
+                   class="btn add-listing-btn">
+                    <i class="fa-solid fa-pen"></i> Edit Listing
+                </a>
+
+                <form method="POST"
+                      action="/listings/<%= listing._id %>?_method=DELETE">
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="fa-solid fa-trash"></i> Delete Listing
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <a href="/listings" class="back-link">
+        <i class="fa-solid fa-arrow-left"></i> Back to all listings
+    </a>
+
+</div>
