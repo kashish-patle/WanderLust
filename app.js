@@ -6,7 +6,13 @@ const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
+const wrapAsync = require("./utils/wrapAsync.js");
+
+
+const { listingSchema, reviewSchema } = require("./schema.js");
+
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/wanderLust";
 
@@ -33,6 +39,29 @@ main()
 async function main() {
     await mongoose.connect(MONGO_URL);
 }
+
+const validateListing = (req, res, next) => {            //mathod to validate schema of listing using joi schema
+    const { error } = listingSchema.validate(req.body);
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    }else {
+     next();
+    }
+};
+
+const validateReview = (req, res, next) => {
+    // Method to validate review schema using Joi
+    const { error } = reviewSchema.validate(req.body);
+
+    if (error) {
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400, errMsg);
+    } else {
+        next();
+    }
+};
+
 
 // INDEX ROUTE
 app.get("/listings", async (req, res) => {
@@ -63,25 +92,15 @@ app.get("/listings/new", (req, res) => {
 //         next(err);
 //     }
 // });  
+
  // CREATE ROUTE
-app.post("/listings", async (req, res, next) => {
-    try {
-        const listingData = req.body.listing;
+app.post("/listings", validateListing, wrapAsync(async (req, res, next) => {
+    const newListing = new Listing(req.body.listing);
+    await newListing.save();
+    res.redirect(`/listings/${newListing._id}`);
+}));
 
-        if (!/^[0-9]+$/.test(String(listingData.price)) ||
-            Number(listingData.price) <= 0) {
-            throw new ExpressError(400, "Invalid price! Please enter numbers only.");
-        }
 
-        const newListing = new Listing(listingData);
-        await newListing.save();
-
-        res.redirect("/listings");
-
-    } catch (err) {
-        next(err);
-    }
-}); 
 
 // EDIT ROUTE
 app.get("/listings/:id/edit", async (req, res) => {
@@ -90,12 +109,15 @@ app.get("/listings/:id/edit", async (req, res) => {
     res.render("listing/edit.ejs", { listing });
 });
 
+
 // UPDATE ROUTE
-app.put("/listings/:id", async (req, res) => {
+app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
     let { id } = req.params;
+
     await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+
     res.redirect(`/listings/${id}`);
-});
+}));
 
 // DELETE ROUTE
 app.delete("/listings/:id", async (req, res) => {
@@ -104,12 +126,42 @@ app.delete("/listings/:id", async (req, res) => {
     res.redirect("/listings");
 });
 
+
+// Review Route
+// REVIEW ROUTE
+app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+        throw new ExpressError(404, "Listing not found!");
+    }
+
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview);
+
+    await newReview.save();
+    await listing.save();
+
+    res.redirect(`/listings/${listing._id}`);
+}));
+
 // SHOW ROUTE
-app.get("/listings/:id", async (req, res) => {
+// app.get("/listings/:id", async (req, res) => {
+//     let { id } = req.params;
+//     const listing = await Listing.findById(id);
+//     res.render("listing/show.ejs", { listing });
+// });
+// SHOW ROUTE
+app.get("/listings/:id", wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+
+    const listing = await Listing.findById(id).populate("reviews");
+
     res.render("listing/show.ejs", { listing });
-});
+}));
+
+
 
 // ROOT ROUTE
 app.get("/", (req, res) => {
