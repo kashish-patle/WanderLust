@@ -115,6 +115,9 @@
                         <%= review.createdAt.toDateString() %>
                     </p>
                 </div>
+                <form mb-3 method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                   <button class="btn btn-sm btn-dark">Delete</button> 
+                </form>
             </div>
         <% } %>
     </div>
