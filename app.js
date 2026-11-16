@@ -40,140 +40,18 @@ async function main() {
     await mongoose.connect(MONGO_URL);
 }
 
-const validateListing = (req, res, next) => {            //mathod to validate schema of listing using joi schema
-    const { error } = listingSchema.validate(req.body);
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    }else {
-     next();
-    }
-};
-
-const validateReview = (req, res, next) => {
-    // Method to validate review schema using Joi
-    const { error } = reviewSchema.validate(req.body);
-
-    if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
-        throw new ExpressError(400, errMsg);
-    } else {
-        next();
-    }
-};
 
 
-// INDEX ROUTE
-app.get("/listings", async (req, res) => {
-    const allListing = await Listing.find({});
-    res.render("listing/index.ejs", { allListing });
-});
-
-// NEW ROUTE
-app.get("/listings/new", (req, res) => {
-    res.render("listing/new.ejs");
-});
-
-// CREATE ROUTE
-// app.post("/listings", async (req, res, next) => {
-//     try {
-//         const listingData = req.body.listing;
-
-//         if (!/^[0-9]+$/.test(String(listingData.price)) ||
-//             Number(listingData.price) <= 0) {
-//             return res.status(400).send("Invalid price! Please enter numbers only.");
-//         }
-
-//         const newListing = new Listing(listingData);
-//         await newListing.save();
-
-        
-//     } catch (err) {
-//         next(err);
-//     }
-// });  
-
- // CREATE ROUTE
-app.post("/listings", validateListing, wrapAsync(async (req, res, next) => {
-    const newListing = new Listing(req.body.listing);
-    await newListing.save();
-    res.redirect(`/listings/${newListing._id}`);
-}));
+//all listing routes are moved to listing.js file and all review routes are moved to review.js file
+const listingRouter = require("./routes/listing.js");
+app.use("/listings", listingRouter);
 
 
+//all review routes are moved to review.js file
+const reviewRouter = require("./routes/review.js");
+app.use("/listings/:id/reviews", reviewRouter);
 
-// EDIT ROUTE
-app.get("/listings/:id/edit", async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listing/edit.ejs", { listing });
-});
-
-
-// UPDATE ROUTE
-app.put("/listings/:id", validateListing, wrapAsync(async (req, res) => {
-    let { id } = req.params;
-
-    await Listing.findByIdAndUpdate(id, { ...req.body.listing });
-
-    res.redirect(`/listings/${id}`);
-}));
-
-// DELETE ROUTE
-app.delete("/listings/:id", async (req, res) => {
-    let { id } = req.params;
-    await Listing.findByIdAndDelete(id);
-    res.redirect("/listings");
-});
-
-
-// REVIEW ROUTE
-app.post("/listings/:id/reviews", validateReview, wrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
-
-    if (!listing) {
-        throw new ExpressError(404, "Listing not found!");
-    }
-
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-
-    res.redirect(`/listings/${listing._id}`);
-}));
-
-
-//delete review route
-app.delete("/listings/:id/reviews/:reviewId", wrapAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-
-    const listing = await Listing.findById(id);
-    await Review.findByIdAndDelete(reviewId);       //updating data in databases
-    await listing.save();
-    res.redirect(`/listings/${id}`);
-}));
-
-// SHOW ROUTE
-// app.get("/listings/:id", async (req, res) => {
-//     let { id } = req.params;
-//     const listing = await Listing.findById(id);
-//     res.render("listing/show.ejs", { listing });
-// });
-// SHOW ROUTE
-app.get("/listings/:id", wrapAsync(async (req, res) => {
-    let { id } = req.params;
-
-    const listing = await Listing.findById(id).populate("reviews");
-
-    res.render("listing/show.ejs", { listing });
-}));
-
-
-
-// ROOT ROUTE
+//root route
 app.get("/", (req, res) => {
     res.send("Hi, I am Root");
 });
