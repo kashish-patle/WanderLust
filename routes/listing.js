@@ -12,9 +12,13 @@ const validateListing = (req, res, next) => {
     const { error } = listingSchema.validate(req.body);
 
     if (error) {
-        const errMsg = error.details.map(el => el.message).join(",");
+        const errMsg = error.details
+            .map((el) => el.message)
+            .join(",");
+
         throw new ExpressError(400, errMsg);
     }
+
     next();
 };
 
@@ -32,39 +36,75 @@ router.get("/new", (req, res) => {
 // CREATE ROUTE
 router.post("/", validateListing, wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
+
     await newListing.save();
+
+    req.flash("success", "Successfully created a new listing!");
+
     res.redirect(`/listings/${newListing._id}`);
 }));
 
 // EDIT ROUTE
 router.get("/:id/edit", wrapAsync(async (req, res) => {
     const { id } = req.params;
+
     const listing = await Listing.findById(id);
+
+    if (!listing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
     res.render("listing/edit.ejs", { listing });
 }));
 
 // UPDATE ROUTE
 router.put("/:id", validateListing, wrapAsync(async (req, res) => {
     const { id } = req.params;
-    await Listing.findByIdAndUpdate(
+
+    const updatedListing = await Listing.findByIdAndUpdate(
         id,
         { ...req.body.listing },
-        { runValidators: true }
+        { new: true, runValidators: true }
     );
+
+    if (!updatedListing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
+    req.flash("success", "Listing updated successfully!");
+
     res.redirect(`/listings/${id}`);
 }));
 
 // DELETE ROUTE
 router.delete("/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
-    await Listing.findByIdAndDelete(id);
+
+    const deletedListing = await Listing.findByIdAndDelete(id);
+
+    if (!deletedListing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
+    req.flash("success", "Listing deleted successfully!");
+
     res.redirect("/listings");
 }));
 
 // SHOW ROUTE
 router.get("/:id", wrapAsync(async (req, res) => {
     const { id } = req.params;
+
     const listing = await Listing.findById(id).populate("reviews");
+
+    if (!listing) {
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
+    }
+
     res.render("listing/show.ejs", { listing });
 }));
 

@@ -1,5 +1,6 @@
 
 
+
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 
@@ -9,12 +10,15 @@ const ExpressError = require("../utils/ExpressError.js");
 const wrapAsync = require("../utils/wrapAsync.js");
 const { reviewSchema } = require("../schema.js");
 
-// VALIDATION MIDDLEWARE
+// Validation Middleware
 const validateReview = (req, res, next) => {
     const { error } = reviewSchema.validate(req.body);
 
     if (error) {
-        let errMsg = error.details.map((el) => el.message).join(",");
+        const errMsg = error.details
+            .map((el) => el.message)
+            .join(",");
+
         throw new ExpressError(400, errMsg);
     }
 
@@ -23,20 +27,25 @@ const validateReview = (req, res, next) => {
 
 // CREATE REVIEW ROUTE
 router.post("/", validateReview, wrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
+    const { id } = req.params;
+
+    const listing = await Listing.findById(id);
 
     if (!listing) {
-        throw new ExpressError(404, "Listing not found!");
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
     }
 
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview);
+    const newReview = new Review(req.body.review);
 
     await newReview.save();
+
+    listing.reviews.push(newReview._id);
     await listing.save();
 
-    res.redirect(`/listings/${listing._id}`);
+    req.flash("success", "Review added successfully!");
+
+    res.redirect(`/listings/${id}`);
 }));
 
 // DELETE REVIEW ROUTE
@@ -46,13 +55,18 @@ router.delete("/:reviewId", wrapAsync(async (req, res) => {
     const listing = await Listing.findById(id);
 
     if (!listing) {
-        throw new ExpressError(404, "Listing not found!");
+        req.flash("error", "Listing not found!");
+        return res.redirect("/listings");
     }
 
+    // Remove review reference from listing
     listing.reviews.pull(reviewId);
-
     await listing.save();
+
+    // Delete review from database
     await Review.findByIdAndDelete(reviewId);
+
+    req.flash("success", "Review deleted successfully!");
 
     res.redirect(`/listings/${id}`);
 }));
