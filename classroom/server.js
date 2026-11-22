@@ -1,28 +1,59 @@
 const express = require("express");
 const app = express();
-const cookieParser = require("cookie-parser");
 
-app.use(cookieParser("mySecretKey"));
+const session = require("express-session");
+const flash = require("connect-flash");
 
-// const userRouter = require("./routes/user.js");
-// const postRouter = require("./routes/post.js");
+app.set("view engine", "ejs");
 
-// // User routes
-// app.use("/users", userRouter);
-// // Post routes
-// app.use("/posts", postRouter);
+// Session configuration
+const sessionOptions = {
+    secret: "mysecretkey",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false
+    }
+};
 
+// Middleware
+app.use(session(sessionOptions));
+app.use(flash());
 
-// Send signed cookie
-app.get("/getsignedcookie", (req, res) => {
-    res.cookie("name", "Kashish", { signed: true });
-    res.send("Signed cookie sent!");
+// res.locals middleware
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
 });
 
-// Read signed cookie
-app.get("/", (req, res) => {
-    console.log("Signed Cookies:", req.signedCookies);
-    res.send("Hello!"+`${req.signedCookies.name }`);
+// Register route
+app.get("/register", (req, res) => {
+    let { name = "Guest" } = req.query;
+
+    req.session.name = name;
+
+    req.flash("success", `Welcome, ${name}! You have been registered.`);
+
+    res.redirect("/hello");
+});
+
+// Error route
+app.get("/error", (req, res) => {
+    req.flash("error", "Something went wrong!");
+    res.redirect("/hello");
+});
+
+// Hello route
+app.get("/hello", (req, res) => {
+    res.render("page.ejs", {
+        name: req.session.name || "Guest"
+    });
+});
+
+// Test route
+app.get("/test", (req, res) => {
+    res.send("Test successful");
 });
 
 app.listen(3000, () => {

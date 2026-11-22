@@ -1,6 +1,4 @@
 
-
-
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
     <div class="container-fluid">
 
@@ -10,11 +8,13 @@
             WanderLust
         </a>
 
-
         <!-- Mobile Toggle -->
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -35,20 +35,44 @@
                 </li>
             </ul>
 
-            <!-- Right Side -->
-            <form class="d-flex me-3" role="search" action="/listings" method="GET">
+            <!-- Search -->
+            <form class="d-flex me-3" role="search"
+                  action="/listings" method="GET">
                 <input class="form-control me-2"
                        type="search"
                        placeholder="Search listings"
                        name="search">
-                <button class="btn btn-outline-success" type="submit">
+
+                <button class="btn btn-outline-success"
+                        type="submit">
                     Search
                 </button>
             </form>
 
-            <a href="#" class="btn btn-outline-dark me-2">Login</a>
-            <a href="#" class="btn btn-dark">Sign Up</a>
+            <!-- Login / Signup / Logout -->
+            <!-- Login / Signup / Logout -->
+            <div class="navbar-nav">
+                <% if (!currUser) { %>
 
+                    <a href="/login"
+                       class="btn btn-outline-dark me-2">
+                        Login
+                    </a>
+
+                    <a href="/signup"
+                       class="btn btn-dark">
+                        Sign Up
+                    </a>
+
+                <% } else { %>
+
+                    <a href="/logout"
+                       class="btn btn-outline-danger">
+                        Logout
+                    </a>
+
+                <% } %>
+            </div>
         </div>
     </div>
 </nav>
