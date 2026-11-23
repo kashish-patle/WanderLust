@@ -14,8 +14,12 @@
         >
 
         <div class="card-body show-card-body">
-
-            
+             
+            <p>
+                <i class="fa-solid fa-user"></i>
+                <i><b><%= listing.owner.username %> </b>--(Owner Of Property)</i>
+            </p>
+                            
 
             <p class="show-description">
                 <%= listing.description %>
@@ -33,19 +37,21 @@
                 <span>/ night</span>
             </h5>
 
-            <div class="show-actions">
-                <a href="/listings/<%= listing._id %>/edit"
-                   class="btn add-listing-btn">
-                    <i class="fa-solid fa-pen"></i> Edit Listing
-                </a>
+            
+                 <div class="show-actions">
+                    <a href="/listings/<%= listing._id %>/edit"
+                    class="btn add-listing-btn">
+                        <i class="fa-solid fa-pen"></i> Edit Listing
+                    </a>
 
-                <form method="POST"
-                      action="/listings/<%= listing._id %>?_method=DELETE">
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="fa-solid fa-trash"></i> Delete Listing
-                    </button>
-                </form>
-            </div>
+                    <form method="POST"
+                        action="/listings/<%= listing._id %>?_method=DELETE">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fa-solid fa-trash"></i> Delete Listing
+                        </button>
+                    </form>
+                </div>
+            
 
         </div>
     </div>

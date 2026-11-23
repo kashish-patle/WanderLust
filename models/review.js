@@ -14,7 +14,11 @@ const reviewSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    auther : {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
 });
 
 const Review = mongoose.model("Review", reviewSchema);    //model created for the review schema, which will be used to create and manage review documents in the MongoDB database.
